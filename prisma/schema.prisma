@@ -9,3 +9,87 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+
+model invoice_products {
+  id Int @id @default(autoincrement())
+  invoice_id BigInt
+  product_id BigInt
+  user_id BigInt
+  qty String
+  sale_price String
+  create_at DateTime
+  update_at DateTime
+  invoices invoices[]
+  products_db products_db[]
+  users users[]
+}
+
+model invoices {
+  id Int @id @default(autoincrement())
+  total String
+  discount String
+  vat String
+  payable String
+  user_id Int @unique
+  customer_id BigInt
+  create_at DateTime
+  updated_at DateTime
+  invoice_products invoice_products @relation(fields: [user_id], references: [id],onDelete: Restrict, onUpdate: Cascade)
+  customer_db customer_db[]
+  users users[]
+}
+
+model products_db {
+  id Int @id @default(autoincrement())
+  user_id BigInt
+  category_id BigInt
+  name String
+  price String 
+  unit String
+  img_url String
+  create_at DateTime
+  update_at DateTime
+  products_db products_db  @relation(fields: [user_id], references: [id],onDelete: Restrict, onUpdate: Cascade)
+  categories categories[]
+  users users[]
+
+}
+
+model categories{
+  id Int @id @default(autoincrement())
+  name String
+  user_id BigInt
+  create_at DateTime
+  update_at DateTime
+  categories categories  @relation(fields: [user_id], references: [id],onDelete: Restrict, onUpdate: Cascade)
+  users users[]
+}
+
+
+model customer_db{
+  id Int @id @default(autoincrement())
+  name String
+  email String
+  mobile String
+  create_at BigInt
+  update_at BigInt
+  user_id String @unique
+ customer_db customer_db  @relation(fields: [user_id], references: [id],onDelete: Restrict, onUpdate: Cascade)
+  users users[]
+}
+
+
+model users{
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String
+  email String
+  mobile String
+  password String
+  otp String
+  create_at DateTime
+  update_at DateTime
+  user_id String @unique
+  users users  @relation(fields: [user_id], references: [id],onDelete: Restrict, onUpdate: Cascade)
+}
